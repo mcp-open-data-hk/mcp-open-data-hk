@@ -13,6 +13,6 @@ from .server import (
     get_datasets_by_format,
 )
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __author__ = "Tony Chan"
 __email__ = "chankwongyintony@gmail.com"
