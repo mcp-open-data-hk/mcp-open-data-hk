@@ -5,10 +5,12 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 import json
 import asyncio
+import pytest
 from fastmcp import Client
 from server import mcp
 
 
+@pytest.mark.asyncio
 async def test_client():
     """Test the MCP client with our enhanced server"""
     # Create a client that connects to our server
