@@ -365,6 +365,70 @@ You can extend the server by adding more tools in `src/server.py`. Follow the ex
 
 The server automatically exposes all functions decorated with `@mcp.tool` to MCP clients.
 
+## GitHub Workflows
+
+This project includes GitHub Actions workflows for CI/CD:
+
+1. **CI Workflow**: Runs tests across multiple Python versions (3.8-3.11) on every push/PR to main branch
+2. **Publish Workflow**: Automatically builds and publishes to TestPyPI on every push to main, and to PyPI on version tags (v*.*.*)
+3. **Code Quality Workflow**: Checks code formatting and linting on every push/PR
+4. **Release Workflow**: Automatically creates GitHub releases when tags are pushed
+
+### Setup for Publishing (Trusted Publishing)
+
+This project uses PyPI's Trusted Publishing which is more secure than using API tokens. To set it up:
+
+1. Go to https://pypi.org/manage/account/publishing/ and add a new pending publisher with:
+   - Project name: `mcp-open-data-hk`
+   - Owner: Your GitHub username or organization
+   - Repository name: `mcp-open-data-hk`
+   - Workflow name: `publish.yml`
+   - Environment name: `pypi`
+
+2. Go to https://test.pypi.org/manage/account/publishing/ and add a new pending publisher with the same information but use `testpypi` as the environment name.
+
+3. In your GitHub repository, go to "Settings" > "Environments" and create two environments:
+   - `pypi` - Set "Required reviewers" to your username for security
+   - `testpypi` - No additional configuration needed
+
+With Trusted Publishing, no API tokens need to be created or stored as secrets.
+
+### GitHub Environments
+
+For the Trusted Publishing to work correctly, you need to create two environments in your GitHub repository settings:
+1. `pypi` - This environment requires manual approval for security when publishing to PyPI
+2. `testpypi` - This environment doesn't require manual approval and will automatically publish to TestPyPI
+
+To create these environments:
+1. Go to your repository's "Settings" tab
+2. Click on "Environments" in the left sidebar
+3. Click "New environment"
+4. Create the `pypi` environment and enable "Required reviewers" with your username
+5. Create the `testpypi` environment with no additional settings
+
+### Releasing New Versions
+
+To release a new version:
+
+1. Update the version number in `pyproject.toml`
+2. Commit the changes
+3. Create and push a new tag:
+   ```bash
+   git tag -a v1.0.0 -m "Release version 1.0.0"
+   git push origin v1.0.0
+   ```
+
+Or use the provided release script:
+```bash
+./release.sh 1.0.0
+```
+
+This will automatically trigger the publish workflow to build and publish the package to TestPyPI and PyPI (for tagged releases), and create a GitHub release.
+
+## Contributing
+
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) for details on how to contribute to this project.
+
 ## Project Structure
 
 ```
