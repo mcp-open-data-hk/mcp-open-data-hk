@@ -1,16 +1,18 @@
-import pytest
-import asyncio
 import sys
 import os
 
-# Add the src directory to the path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
+import pytest
 from server import (
-    mcp, list_datasets, get_dataset_details, list_categories, 
-    get_category_details, search_datasets, get_supported_formats,
-    search_datasets_with_facets, get_datasets_by_format
+    list_datasets,
+    list_categories,
+    search_datasets,
+    get_supported_formats,
+    search_datasets_with_facets,
+    get_datasets_by_format,
 )
+
 
 @pytest.mark.asyncio
 async def test_list_datasets():
@@ -25,6 +27,7 @@ async def test_list_datasets():
         # API might be unavailable
         pytest.skip(f"API unavailable: {e}")
 
+
 @pytest.mark.asyncio
 async def test_list_categories():
     # Test listing categories
@@ -36,6 +39,7 @@ async def test_list_categories():
     except Exception as e:
         # API might be unavailable
         pytest.skip(f"API unavailable: {e}")
+
 
 @pytest.mark.asyncio
 async def test_search_datasets():
@@ -51,6 +55,7 @@ async def test_search_datasets():
         # API might be unavailable
         pytest.skip(f"API unavailable: {e}")
 
+
 @pytest.mark.asyncio
 async def test_get_supported_formats():
     # Test getting supported formats
@@ -63,6 +68,7 @@ async def test_get_supported_formats():
     except Exception as e:
         # API might be unavailable
         pytest.skip(f"API unavailable: {e}")
+
 
 @pytest.mark.asyncio
 async def test_search_datasets_with_facets():
@@ -77,6 +83,7 @@ async def test_search_datasets_with_facets():
         # API might be unavailable
         pytest.skip(f"API unavailable: {e}")
 
+
 @pytest.mark.asyncio
 async def test_get_datasets_by_format():
     # Test getting datasets by format
@@ -89,6 +96,7 @@ async def test_get_datasets_by_format():
     except Exception as e:
         # API might be unavailable
         pytest.skip(f"API unavailable: {e}")
+
 
 # Additional tests would go here, but we'll skip tests that require specific IDs
 # since they might change over time
