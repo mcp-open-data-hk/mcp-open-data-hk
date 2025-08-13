@@ -2,6 +2,27 @@
 
 This is an MCP (Model Context Protocol) server that provides access to data from [data.gov.hk](https://data.gov.hk), the official open data portal of the Hong Kong government.
 
+## Installation
+
+You can install the package directly from PyPI:
+
+```bash
+pip install mcp-open-data-hk
+```
+
+After installation, configure your MCP-compatible client (like Cursor, Claude Code, or Claude Desktop) by adding the following to your settings.json:
+
+```json
+{
+  "mcpServers": {
+    "mcp-open-data-hk": {
+      "command": "python",
+      "args": ["-m", "mcp_open_data_hk"]
+    }
+  }
+}
+```
+
 ## Features
 
 The server provides the following tools to interact with the data.gov.hk API:
@@ -15,21 +36,15 @@ The server provides the following tools to interact with the data.gov.hk API:
 7. `get_datasets_by_format` - Get datasets by file format
 8. `get_supported_formats` - Get list of supported file formats
 
-## Installation
-
-1. Install the required dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. Run the server:
+3. **For local development**:
    ```bash
    python src/server.py
    ```
 
-## Usage
-
-Once the server is running, you can connect to it using any MCP-compatible client. The server will expose the tools listed above for querying data from data.gov.hk.
+4. **Using FastMCP CLI**:
+   ```bash
+   fastmcp run src/server.py:mcp
+   ```
 
 ## Tools
 
@@ -166,8 +181,8 @@ fastmcp install cursor src/server.py --server-name "mcp-open-data-hk"
 4. Enter:
    - Name: mcp-open-data-hk
    - Command: `python`
-   - Arguments: `["/full/path/to/data_gov_hk_mcp/src/server.py"]`
-   - Working Directory: `/full/path/to/data_gov_hk_mcp`
+   - Arguments: `["-m", "mcp_open_data_hk"]`
+   - Working Directory: `/full/path/to/mcp-open-data-hk`
 
 **Manual Configuration via settings.json:**
 Edit your Cursor settings.json file and add:
@@ -176,8 +191,8 @@ Edit your Cursor settings.json file and add:
   "mcpServers": {
     "mcp-open-data-hk": {
       "command": "python",
-      "args": ["/full/path/to/data_gov_hk_mcp/src/server.py"],
-      "cwd": "/full/path/to/data_gov_hk_mcp"
+      "args": ["-m", "mcp_open_data_hk"],
+      "cwd": "/full/path/to/mcp-open-data-hk"
     }
   }
 }
@@ -197,8 +212,8 @@ fastmcp install claude-code src/server.py --server-name "mcp-open-data-hk"
 4. Enter:
    - Name: mcp-open-data-hk
    - Command: `python`
-   - Arguments: `["/full/path/to/data_gov_hk_mcp/src/server.py"]`
-   - Working Directory: `/full/path/to/data_gov_hk_mcp`
+   - Arguments: `["-m", "mcp_open_data_hk"]`
+   - Working Directory: `/full/path/to/mcp-open-data-hk`
 
 **Manual Configuration via settings.json:**
 Edit your Claude Code settings.json file and add:
@@ -207,8 +222,8 @@ Edit your Claude Code settings.json file and add:
   "mcpServers": {
     "mcp-open-data-hk": {
       "command": "python",
-      "args": ["/full/path/to/data_gov_hk_mcp/src/server.py"],
-      "cwd": "/full/path/to/data_gov_hk_mcp"
+      "args": ["-m", "mcp_open_data_hk"],
+      "cwd": "/full/path/to/mcp-open-data-hk"
     }
   }
 }
@@ -223,34 +238,34 @@ fastmcp install claude-desktop src/server.py --server-name "mcp-open-data-hk"
 
 ## Understanding Path Configuration
 
-You'll notice that our configuration requires full file paths, unlike some published MCP servers that use package names. This is because:
+When installed as a package, the server can be referenced by its module name rather than file path. This is more convenient for users as they don't need to specify full file paths.
 
-### Published Packages (like public-example.json):
-```json
-{
-  "mcpServers": {
-    "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"]
-    }
-  }
-}
-```
-These use `npx` to download and execute published packages directly from the npm registry.
-
-### Local Scripts (Our Server):
+### Installed Package:
 ```json
 {
   "mcpServers": {
     "mcp-open-data-hk": {
       "command": "python",
-      "args": ["/full/path/to/data_gov_hk_mcp/src/server.py"],
-      "cwd": "/full/path/to/data_gov_hk_mcp"
+      "args": ["-m", "mcp_open_data_hk"]
     }
   }
 }
 ```
-Our server is a local Python script that needs to be referenced by its file path.
+
+### Local Development (file path approach):
+```json
+{
+  "mcpServers": {
+    "mcp-open-data-hk": {
+      "command": "python",
+      "args": ["/full/path/to/mcp-open-data-hk/src/server.py"],
+      "cwd": "/full/path/to/mcp-open-data-hk"
+    }
+  }
+}
+```
+
+The package installation approach is recommended for end users, while the file path approach is useful for local development and testing.
 
 ## Alternative Approach: Packaging for Distribution
 
@@ -258,18 +273,12 @@ If you want to make your server work like the published examples, you can packag
 
 1. **Package as a Python package** and publish it to PyPI
 2. Users would then install and run it like:
-   ```json
-   {
-     "mcpServers": {
-       "mcp-open-data-hk": {
-         "command": "python",
-         "args": ["-m", "data_gov_hk_mcp"]
-       }
-     }
-   }
+   ```bash
+   pip install mcp-open-data-hk
+   mcp-open-data-hk
    ```
 
-However, for local development and testing, the file path approach we're using is the correct and most straightforward method.
+However, for local development and testing, you can run it directly as shown in the Installation section.
 
 ## Using Environment Variables
 
@@ -369,7 +378,7 @@ The server automatically exposes all functions decorated with `@mcp.tool` to MCP
 
 This project includes GitHub Actions workflows for CI/CD:
 
-1. **CI Workflow**: Runs tests across multiple Python versions (3.8-3.11) on every push/PR to main branch
+1. **CI Workflow**: Runs tests across multiple Python versions (3.10-3.12) on every push/PR to main branch
 2. **Publish Workflow**: Automatically builds and publishes to TestPyPI on every push to main, and to PyPI on version tags (v*.*.*)
 3. **Code Quality Workflow**: Checks code formatting and linting on every push/PR
 4. **Release Workflow**: Automatically creates GitHub releases when tags are pushed
@@ -432,7 +441,7 @@ Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md)
 ## Project Structure
 
 ```
-data_gov_hk_mcp/
+mcp-open-data-hk/
 ├── src/
 │   └── server.py          # Main MCP server implementation
 ├── tests/
@@ -445,6 +454,7 @@ data_gov_hk_mcp/
 ├── README.md             # This file
 ├── run_examples.sh       # Example commands script
 ├── install.sh            # Installation helper script
+├── release.sh            # Release helper script
 └── .gitignore            # Git ignore file
 ```
 

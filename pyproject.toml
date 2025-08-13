@@ -39,9 +39,9 @@ dev = [
 mcp-open-data-hk = "src.server:main"
 
 [project.urls]
-Homepage = "https://github.com/your-username/mcp-open-data-hk"
-Repository = "https://github.com/your-username/mcp-open-data-hk"
-Issues = "https://github.com/your-username/mcp-open-data-hk/issues"
+Homepage = "https://github.com/mcp-open-data-hk/mcp-open-data-hk"
+Repository = "https://github.com/mcp-open-data-hk/mcp-open-data-hk"
+Issues = "https://github.com/mcp-open-data-hk/mcp-open-data-hk/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
