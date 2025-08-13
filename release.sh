@@ -22,8 +22,11 @@ echo "Preparing to release version $VERSION"
 # Update version in pyproject.toml
 sed -i '' "s/version = \"[0-9]*\.[0-9]*\.[0-9]*\"/version = \"$VERSION\"/" pyproject.toml
 
+# Update version in src/__init__.py
+sed -i '' "s/__version__ = \"[0-9]*\.[0-9]*\.[0-9]*\"/__version__ = \"$VERSION\"/" src/__init__.py
+
 # Create and push tag
-git add pyproject.toml
+git add pyproject.toml src/__init__.py
 git commit -m "Bump version to $VERSION"
 git tag -a "v$VERSION" -m "Release version $VERSION"
 git push origin main
