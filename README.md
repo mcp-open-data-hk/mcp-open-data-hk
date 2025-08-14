@@ -43,6 +43,7 @@ After installation, configure your MCP-compatible client (like Cursor, Claude Co
 
 <details>
 <summary>Using pip installation</summary>
+
 ```json
 {
   "mcpServers": {
@@ -53,6 +54,7 @@ After installation, configure your MCP-compatible client (like Cursor, Claude Co
   }
 }
 ```
+
 </details>
 
 ## Features
