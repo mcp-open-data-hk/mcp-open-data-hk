@@ -146,11 +146,6 @@ python tests/comprehensive_test.py
 python -m src.mcp_open_data_hk
 ```
 
-### Run with FastMCP CLI:
-```bash
-fastmcp run src.mcp_open_data_hk.server:mcp
-```
-
 ### Run unit tests:
 ```bash
 pytest tests/

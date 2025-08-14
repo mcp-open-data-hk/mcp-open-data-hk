@@ -4,25 +4,25 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 import pytest
-from server import (
-    list_datasets,
-    list_categories,
-    search_datasets,
-    get_supported_formats,
-    search_datasets_with_facets,
-    get_datasets_by_format,
-)
+import json
+import asyncio
+from fastmcp import Client
+from mcp_open_data_hk.server import mcp
 
 
 @pytest.mark.asyncio
 async def test_list_datasets():
     # Test listing datasets
     try:
-        result = await list_datasets(limit=5)
-        assert isinstance(result, list)
-        assert len(result) <= 5
-        # Should contain dataset IDs
-        assert all(isinstance(dataset_id, str) for dataset_id in result)
+        client = Client(mcp)
+        async with client:
+            result = await client.call_tool("list_datasets", {"limit": 5})
+            datasets_str = result.content[0].text if result.content else "[]"
+            datasets = json.loads(datasets_str)
+            assert isinstance(datasets, list)
+            assert len(datasets) <= 5
+            # Should contain dataset IDs
+            assert all(isinstance(dataset_id, str) for dataset_id in datasets)
     except Exception as e:
         # API might be unavailable
         pytest.skip(f"API unavailable: {e}")
@@ -32,10 +32,14 @@ async def test_list_datasets():
 async def test_list_categories():
     # Test listing categories
     try:
-        result = await list_categories()
-        assert isinstance(result, list)
-        # Should contain category IDs
-        assert all(isinstance(category_id, str) for category_id in result)
+        client = Client(mcp)
+        async with client:
+            result = await client.call_tool("list_categories")
+            categories_str = result.content[0].text if result.content else "[]"
+            categories = json.loads(categories_str)
+            assert isinstance(categories, list)
+            # Should contain category IDs
+            assert all(isinstance(category_id, str) for category_id in categories)
     except Exception as e:
         # API might be unavailable
         pytest.skip(f"API unavailable: {e}")
@@ -45,12 +49,16 @@ async def test_list_categories():
 async def test_search_datasets():
     # Test searching datasets
     try:
-        result = await search_datasets("transport", limit=3)
-        assert isinstance(result, dict)
-        assert "count" in result
-        assert "results" in result
-        assert "has_more" in result
-        assert len(result["results"]) <= 3
+        client = Client(mcp)
+        async with client:
+            result = await client.call_tool("search_datasets", {"query": "transport", "limit": 3})
+            search_results_str = result.content[0].text if result.content else "{}"
+            search_results = json.loads(search_results_str)
+            assert isinstance(search_results, dict)
+            assert "count" in search_results
+            assert "results" in search_results
+            assert "has_more" in search_results
+            assert len(search_results["results"]) <= 3
     except Exception as e:
         # API might be unavailable
         pytest.skip(f"API unavailable: {e}")
@@ -60,11 +68,15 @@ async def test_search_datasets():
 async def test_get_supported_formats():
     # Test getting supported formats
     try:
-        result = await get_supported_formats()
-        assert isinstance(result, list)
-        assert len(result) > 0
-        # Should contain common formats
-        assert "CSV" in result or "JSON" in result
+        client = Client(mcp)
+        async with client:
+            result = await client.call_tool("get_supported_formats")
+            formats_str = result.content[0].text if result.content else "[]"
+            formats = json.loads(formats_str)
+            assert isinstance(formats, list)
+            assert len(formats) > 0
+            # Should contain common formats
+            assert "CSV" in formats or "JSON" in formats
     except Exception as e:
         # API might be unavailable
         pytest.skip(f"API unavailable: {e}")
@@ -74,11 +86,15 @@ async def test_get_supported_formats():
 async def test_search_datasets_with_facets():
     # Test searching datasets with facets
     try:
-        result = await search_datasets_with_facets("transport")
-        assert isinstance(result, dict)
-        assert "count" in result
-        assert "search_facets" in result
-        assert "results" in result
+        client = Client(mcp)
+        async with client:
+            result = await client.call_tool("search_datasets_with_facets", {"query": "transport"})
+            search_results_str = result.content[0].text if result.content else "{}"
+            search_results = json.loads(search_results_str)
+            assert isinstance(search_results, dict)
+            assert "count" in search_results
+            assert "results" in search_results
+            assert "has_more" in search_results
     except Exception as e:
         # API might be unavailable
         pytest.skip(f"API unavailable: {e}")
@@ -88,11 +104,15 @@ async def test_search_datasets_with_facets():
 async def test_get_datasets_by_format():
     # Test getting datasets by format
     try:
-        result = await get_datasets_by_format("CSV", limit=3)
-        assert isinstance(result, dict)
-        assert "count" in result
-        assert "results" in result
-        assert len(result["results"]) <= 3
+        client = Client(mcp)
+        async with client:
+            result = await client.call_tool("get_datasets_by_format", {"file_format": "CSV", "limit": 3})
+            search_results_str = result.content[0].text if result.content else "{}"
+            search_results = json.loads(search_results_str)
+            assert isinstance(search_results, dict)
+            assert "count" in search_results
+            assert "results" in search_results
+            assert len(search_results["results"]) <= 3
     except Exception as e:
         # API might be unavailable
         pytest.skip(f"API unavailable: {e}")

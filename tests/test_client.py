@@ -7,7 +7,7 @@ import json
 import asyncio
 import pytest
 from fastmcp import Client
-from server import mcp
+from mcp_open_data_hk.server import mcp
 
 
 @pytest.mark.asyncio
@@ -30,8 +30,31 @@ async def test_client():
         except Exception as e:
             print(f"   Error: {e}")
 
-        # Test 2: List categories
-        print("\n2. Testing list_categories...")
+        # Test 2: Get dataset details
+        print("\n2. Testing get_dataset_details...")
+        try:
+            # First get a dataset ID to test with
+            result = await client.call_tool("list_datasets", {"limit": 1})
+            datasets_str = result.content[0].text if result.content else "[]"
+            datasets = json.loads(datasets_str)
+            
+            if datasets:
+                dataset_id = datasets[0]
+                result = await client.call_tool(
+                    "get_dataset_details", 
+                    {"dataset_id": dataset_id}
+                )
+                details_str = result.content[0].text if result.content else "{}"
+                details = json.loads(details_str)
+                print(f"   Dataset title: {details.get('title', 'N/A')}")
+                print(f"   Number of resources: {len(details.get('resources', []))}")
+            else:
+                print("   No datasets available for testing")
+        except Exception as e:
+            print(f"   Error: {e}")
+
+        # Test 3: List categories
+        print("\n3. Testing list_categories...")
         try:
             result = await client.call_tool("list_categories")
             categories_str = result.content[0].text if result.content else "[]"
@@ -41,8 +64,31 @@ async def test_client():
         except Exception as e:
             print(f"   Error: {e}")
 
-        # Test 3: Enhanced search datasets (simplified version)
-        print("\n3. Testing simplified search_datasets...")
+        # Test 4: Get category details
+        print("\n4. Testing get_category_details...")
+        try:
+            # First get a category ID to test with
+            result = await client.call_tool("list_categories", {"limit": 1})
+            categories_str = result.content[0].text if result.content else "[]"
+            categories = json.loads(categories_str)
+            
+            if categories:
+                category_id = categories[0]
+                result = await client.call_tool(
+                    "get_category_details", 
+                    {"category_id": category_id}
+                )
+                details_str = result.content[0].text if result.content else "{}"
+                details = json.loads(details_str)
+                print(f"   Category title: {details.get('title', 'N/A')}")
+                print(f"   Dataset count: {details.get('package_count', 'N/A')}")
+            else:
+                print("   No categories available for testing")
+        except Exception as e:
+            print(f"   Error: {e}")
+
+        # Test 5: Search datasets
+        print("\n5. Testing search_datasets...")
         try:
             result = await client.call_tool(
                 "search_datasets", {"query": "transport", "limit": 3}
@@ -60,8 +106,8 @@ async def test_client():
         except Exception as e:
             print(f"   Error: {e}")
 
-        # Test 4: Get supported formats
-        print("\n4. Testing get_supported_formats...")
+        # Test 6: Get supported formats
+        print("\n6. Testing get_supported_formats...")
         try:
             result = await client.call_tool("get_supported_formats", {})
             formats_str = result.content[0].text if result.content else "[]"
@@ -71,8 +117,8 @@ async def test_client():
         except Exception as e:
             print(f"   Error: {e}")
 
-        # Test 5: Search with facets
-        print("\n5. Testing search_datasets_with_facets...")
+        # Test 7: Search with facets
+        print("\n7. Testing search_datasets_with_facets...")
         try:
             result = await client.call_tool(
                 "search_datasets_with_facets", {"query": "transport"}
@@ -87,8 +133,8 @@ async def test_client():
         except Exception as e:
             print(f"   Error: {e}")
 
-        # Test 6: Get datasets by format
-        print("\n6. Testing get_datasets_by_format...")
+        # Test 8: Get datasets by format
+        print("\n8. Testing get_datasets_by_format...")
         try:
             result = await client.call_tool(
                 "get_datasets_by_format", {"file_format": "CSV", "limit": 3}

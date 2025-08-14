@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 import json
 import asyncio
 from fastmcp import Client
-from server import mcp
+from mcp_open_data_hk.server import mcp
 
 
 async def search_test():
