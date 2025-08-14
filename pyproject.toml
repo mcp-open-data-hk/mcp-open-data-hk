@@ -36,7 +36,7 @@ dev = [
 ]
 
 [project.scripts]
-mcp-open-data-hk = "src.server:main"
+mcp-open-data-hk = "mcp_open_data_hk.__main__:main"
 
 [project.urls]
 Homepage = "https://github.com/mcp-open-data-hk/mcp-open-data-hk"
@@ -45,9 +45,6 @@ Issues = "https://github.com/mcp-open-data-hk/mcp-open-data-hk/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
-[tool.setuptools.package-dir]
-"" = "src"
 
 [tool.pytest.ini_options]
 asyncio_mode = "strict"

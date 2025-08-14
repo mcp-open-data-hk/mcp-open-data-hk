@@ -258,55 +258,8 @@ async def search_datasets_with_facets(
         search_result = result["result"]
         return {
             "count": search_result.get("count", 0),
-            "search_facets": search_result.get("search_facets", {}),
-            "results": search_result.get("results", []),
-            "has_more": search_result.get("count", 0) > 3,
-        }
-    else:
-        raise Exception(f"API Error: {result.get('error', 'Unknown error')}")
-
-
-@mcp.tool
-async def get_datasets_by_format(
-    file_format: str, limit: int = 10, language: str = "en"
-) -> Dict[str, Any]:
-    """
-    Get datasets that have resources in a specific file format.
-
-    Args:
-        file_format: The file format to filter by (e.g., "CSV", "JSON", "GeoJSON")
-        limit: Maximum number of datasets to return
-        language: Language code (en, tc, sc)
-
-    Returns:
-        A dictionary containing:
-        - count: Total number of matching datasets
-        - results: List of matching datasets
-    """
-    # Using package_search API for search functionality
-    base_url = BASE_URLS.get(language, BASE_URLS["en"])
-    url = f"{base_url}/package_search"
-
-    # Limit the maximum number of results
-    rows = min(limit, 1000)
-
-    # Use filter query to find datasets with specific format
-    filter_query = f"res_format:{file_format.upper()}"
-
-    params = {"q": "*:*", "fq": filter_query, "rows": rows, "start": 0}
-
-    result = await make_api_request(url, params)
-
-    if result.get("success"):
-        search_result = result["result"]
-        return {
-            "count": search_result.get("count", 0),
             "results": search_result.get("results", []),
             "has_more": search_result.get("count", 0) > rows,
         }
     else:
         raise Exception(f"API Error: {result.get('error', 'Unknown error')}")
-
-
-if __name__ == "__main__":
-    mcp.run()
