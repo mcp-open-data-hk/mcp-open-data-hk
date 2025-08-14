@@ -4,14 +4,45 @@ This is an MCP (Model Context Protocol) server that provides access to data from
 
 ## Installation
 
-You can install the package directly from PyPI:
+### Using uv (recommended)
 
-```bash
+When using [`uv`](https://docs.astral.sh/uv/) no specific installation is needed. We will
+use [`uvx`](https://docs.astral.sh/uv/guides/tools/) to directly run _mcp-server-fetch_.
+
+### Using PIP
+
+Alternatively you can install `mcp-server-fetch` via pip:
+
+```
 pip install mcp-open-data-hk
+```
+
+After installation, you can run it as a script using:
+
+```
+python -m mcp_open_data_hk
 ```
 
 After installation, configure your MCP-compatible client (like Cursor, Claude Code, or Claude Desktop) by adding the following to your settings.json:
 
+<details>
+<summary>Using uvx</summary>
+
+```json
+{
+  "mcpServers": {
+    "fetch": {
+      "command": "uvx",
+      "args": ["mcp-open-data-hk"]
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>Using pip installation</summary>
 ```json
 {
   "mcpServers": {
@@ -22,6 +53,7 @@ After installation, configure your MCP-compatible client (like Cursor, Claude Co
   }
 }
 ```
+</details>
 
 ## Features
 
@@ -36,29 +68,34 @@ The server provides the following tools to interact with the DATA.GOV.HK API:
 7. `get_datasets_by_format` - Get datasets by file format
 8. `get_supported_formats` - Get list of supported file formats
 
-
 ## Tools
 
 ### list_datasets
+
 Get a list of dataset IDs from DATA.GOV.HK
 
 Parameters:
+
 - `limit` (optional): Maximum number of datasets to return (default: 1000)
 - `offset` (optional): Offset of the first dataset to return
 - `language` (optional): Language code (en, tc, sc) - defaults to "en"
 
 ### get_dataset_details
+
 Get detailed information about a specific dataset
 
 Parameters:
+
 - `dataset_id`: The ID or name of the dataset to retrieve
 - `language` (optional): Language code (en, tc, sc) - defaults to "en"
 - `include_tracking` (optional): Add tracking information to dataset and resources - defaults to False
 
 ### list_categories
+
 Get a list of data categories (groups)
 
 Parameters:
+
 - `order_by` (optional): Field to sort by ('name' or 'packages') - deprecated, use sort instead
 - `sort` (optional): Sorting of results ('name asc', 'package_count desc', etc.) - defaults to "title asc"
 - `limit` (optional): Maximum number of categories to return
@@ -67,9 +104,11 @@ Parameters:
 - `language` (optional): Language code (en, tc, sc) - defaults to "en"
 
 ### get_category_details
+
 Get detailed information about a specific category (group)
 
 Parameters:
+
 - `category_id`: The ID or name of the category to retrieve
 - `include_datasets` (optional): Include a truncated list of the category's datasets - defaults to False
 - `include_dataset_count` (optional): Include the full package count - defaults to True
@@ -81,52 +120,62 @@ Parameters:
 - `language` (optional): Language code (en, tc, sc) - defaults to "en"
 
 ### search_datasets
+
 Search for datasets by query term using the package_search API.
 
 This function searches across dataset titles, descriptions, and other metadata to find datasets matching the query term. It supports advanced Solr search parameters.
 
 Parameters:
-- `query` (optional): The solr query string (e.g., "transport", "weather", "*:*" for all) - defaults to "*:*"
+
+- `query` (optional): The solr query string (e.g., "transport", "weather", "_:_" for all) - defaults to "_:_"
 - `limit` (optional): Maximum number of datasets to return (default: 10, max: 1000)
 - `offset` (optional): Offset for pagination - defaults to 0
 - `language` (optional): Language code (en, tc, sc) - defaults to "en"
 
 Returns:
 A dictionary containing:
+
 - `count`: Total number of matching datasets
 - `results`: List of matching datasets (up to limit)
 - `search_facets`: Faceted information about the results
 - `has_more`: Boolean indicating if there are more results available
 
 ### search_datasets_with_facets
+
 Search for datasets and return faceted results for better data exploration.
 
 This function is useful for exploring what types of data are available by showing counts of datasets grouped by tags, organizations, or other facets.
 
 Parameters:
-- `query` (optional): The solr query string - defaults to "*:*"
+
+- `query` (optional): The solr query string - defaults to "_:_"
 - `language` (optional): Language code (en, tc, sc) - defaults to "en"
 
 Returns:
 A dictionary containing:
+
 - `count`: Total number of matching datasets
 - `search_facets`: Faceted information about the results
 - `sample_results`: First 3 matching datasets
 
 ### get_datasets_by_format
+
 Get datasets that have resources in a specific file format.
 
 Parameters:
+
 - `file_format`: The file format to filter by (e.g., "CSV", "JSON", "GeoJSON")
 - `limit` (optional): Maximum number of datasets to return - defaults to 10
 - `language` (optional): Language code (en, tc, sc) - defaults to "en"
 
 Returns:
 A dictionary containing:
+
 - `count`: Total number of matching datasets
 - `results`: List of matching datasets
 
 ### get_supported_formats
+
 Get a list of file formats supported by DATA.GOV.HK
 
 Returns:
@@ -135,6 +184,7 @@ A list of supported file formats
 ## Local Testing
 
 ### Run test scripts:
+
 ```bash
 python tests/test_client.py
 python tests/debug_search.py
@@ -142,21 +192,23 @@ python tests/comprehensive_test.py
 ```
 
 ### Run server directly:
+
 ```bash
 python -m src.mcp_open_data_hk
 ```
 
 ### Run unit tests:
+
 ```bash
 pytest tests/
 ```
-
 
 ## Understanding Path Configuration
 
 When installed as a package, the server can be referenced by its module name rather than file path. This is more convenient for users as they don't need to specify full file paths.
 
 ### Installed Package:
+
 ```json
 {
   "mcpServers": {
@@ -169,6 +221,7 @@ When installed as a package, the server can be referenced by its module name rat
 ```
 
 ### Local Development (file path approach):
+
 ```json
 {
   "mcpServers": {
@@ -182,7 +235,6 @@ When installed as a package, the server can be referenced by its module name rat
 ```
 
 The package installation approach is recommended for end users, while the file path approach is useful for local development and testing.
-
 
 ## Example Queries
 
@@ -208,6 +260,7 @@ The AI will automatically use the appropriate tools from your MCP server to fetc
 2. **Path issues**: Ensure the `cwd` in your IDE configuration is the correct absolute path to the project root.
 
 3. **Permission errors**: On Unix systems, make sure the scripts have execute permissions:
+
    ```bash
    chmod +x src/mcp_open_data_hk/__main__.py
    ```
@@ -222,6 +275,7 @@ The AI will automatically use the appropriate tools from your MCP server to fetc
 If you're having issues, you can test the connection manually:
 
 1. Run the server in one terminal:
+
    ```bash
    python -m src.mcp_open_data_hk
    ```
@@ -249,7 +303,7 @@ The server automatically exposes all functions decorated with `@mcp.tool` to MCP
 This project includes GitHub Actions workflows for CI/CD:
 
 1. **CI Workflow**: Runs tests across multiple Python versions (3.10-3.12) on every push/PR to main branch
-2. **Publish Workflow**: Automatically builds and publishes to TestPyPI on every push to main, and to PyPI on version tags (v*.*.*)
+2. **Publish Workflow**: Automatically builds and publishes to TestPyPI on every push to main, and to PyPI on version tags (v*.*.\*)
 3. **Code Quality Workflow**: Checks code formatting and linting on every push/PR
 4. **Release Workflow**: Automatically creates GitHub releases when tags are pushed
 
@@ -258,6 +312,7 @@ This project includes GitHub Actions workflows for CI/CD:
 This project uses PyPI's Trusted Publishing which is more secure than using API tokens. To set it up:
 
 1. Go to https://pypi.org/manage/account/publishing/ and add a new pending publisher with:
+
    - Project name: `mcp-open-data-hk`
    - Owner: Your GitHub username or organization
    - Repository name: `mcp-open-data-hk`
@@ -275,10 +330,12 @@ With Trusted Publishing, no API tokens need to be created or stored as secrets.
 ### GitHub Environments
 
 For the Trusted Publishing to work correctly, you need to create two environments in your GitHub repository settings:
+
 1. `pypi` - This environment requires manual approval for security when publishing to PyPI
 2. `testpypi` - This environment doesn't require manual approval and will automatically publish to TestPyPI
 
 To create these environments:
+
 1. Go to your repository's "Settings" tab
 2. Click on "Environments" in the left sidebar
 3. Click "New environment"
@@ -298,6 +355,7 @@ To release a new version:
    ```
 
 Or use the provided release script:
+
 ```bash
 ./release.sh 1.0.0
 ```
