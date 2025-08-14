@@ -1,8 +1,18 @@
 # mcp-open-data-hk
 
+[![smithery badge](https://smithery.ai/badge/@mcp-open-data-hk/mcp-open-data-hk)](https://smithery.ai/server/@mcp-open-data-hk/mcp-open-data-hk)
+
 This is an MCP (Model Context Protocol) server that provides access to data from [DATA.GOV.HK](https://DATA.GOV.HK), the official open data portal of the Hong Kong government.
 
 ## Installation
+
+### Installing via Smithery
+
+To install mcp-open-data-hk for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@mcp-open-data-hk/mcp-open-data-hk):
+
+```bash
+npx -y @smithery/cli install @mcp-open-data-hk/mcp-open-data-hk --client claude
+```
 
 ### Using uv (recommended)
 
