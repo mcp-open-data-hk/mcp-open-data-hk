@@ -17,16 +17,32 @@ if ! [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     exit 1
 fi
 
+# Check if we're on the main branch
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [ "$CURRENT_BRANCH" != "main" ]; then
+    echo "Error: You must be on the main branch to release"
+    exit 1
+fi
+
 echo "Preparing to release version $VERSION"
 
 # Update version in pyproject.toml
-sed -i '' "s/version = \"[0-9]*\.[0-9]*\.[0-9]*\"/version = \"$VERSION\"/" pyproject.toml
+# Handle both macOS (sed -i '') and Linux (sed -i) syntax
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    sed -i '' "s/version = \"[0-9]*\.[0-9]*\.[0-9]*\"/version = \"$VERSION\"/" pyproject.toml
+else
+    sed -i "s/version = \"[0-9]*\.[0-9]*\.[0-9]*\"/version = \"$VERSION\"/" pyproject.toml
+fi
 
-# Update version in src/__init__.py
-sed -i '' "s/__version__ = \"[0-9]*\.[0-9]*\.[0-9]*\"/__version__ = \"$VERSION\"/" src/__init__.py
+# Update version in src/mcp_open_data_hk/__init__.py
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    sed -i '' "s/__version__ = \"[0-9]*\.[0-9]*\.[0-9]*\"/__version__ = \"$VERSION\"/" src/mcp_open_data_hk/__init__.py
+else
+    sed -i "s/__version__ = \"[0-9]*\.[0-9]*\.[0-9]*\"/__version__ = \"$VERSION\"/" src/mcp_open_data_hk/__init__.py
+fi
 
 # Create and push tag
-git add pyproject.toml src/__init__.py
+git add pyproject.toml src/mcp_open_data_hk/__init__.py
 git commit -m "Bump version to $VERSION"
 git tag -a "v$VERSION" -m "Release version $VERSION"
 git push origin main
