@@ -36,7 +36,7 @@ dev = [
 ]
 
 [project.scripts]
-mcp-open-data-hk = "mcp_open_data_hk.__main__:main"
+mcp-open-data-hk = "mcp_open_data_hk:main"
 
 [project.urls]
 Homepage = "https://github.com/mcp-open-data-hk/mcp-open-data-hk"
