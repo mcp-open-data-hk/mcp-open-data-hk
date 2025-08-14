@@ -114,9 +114,9 @@ async def list_categories(
         params["order_by"] = order_by
 
     if limit is not None:
-        params["limit"] = limit
+        params["limit"] = str(limit)
     if offset is not None:
-        params["offset"] = offset
+        params["offset"] = str(offset)
 
     result = await make_api_request(url, params)
     if result.get("success"):
