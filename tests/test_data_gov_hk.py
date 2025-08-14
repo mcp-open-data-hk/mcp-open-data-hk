@@ -5,7 +5,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 import pytest
 import json
-import asyncio
 from fastmcp import Client
 from mcp_open_data_hk.server import mcp
 
@@ -51,7 +50,9 @@ async def test_search_datasets():
     try:
         client = Client(mcp)
         async with client:
-            result = await client.call_tool("search_datasets", {"query": "transport", "limit": 3})
+            result = await client.call_tool(
+                "search_datasets", {"query": "transport", "limit": 3}
+            )
             search_results_str = result.content[0].text if result.content else "{}"
             search_results = json.loads(search_results_str)
             assert isinstance(search_results, dict)
@@ -88,7 +89,9 @@ async def test_search_datasets_with_facets():
     try:
         client = Client(mcp)
         async with client:
-            result = await client.call_tool("search_datasets_with_facets", {"query": "transport"})
+            result = await client.call_tool(
+                "search_datasets_with_facets", {"query": "transport"}
+            )
             search_results_str = result.content[0].text if result.content else "{}"
             search_results = json.loads(search_results_str)
             assert isinstance(search_results, dict)
@@ -106,7 +109,9 @@ async def test_get_datasets_by_format():
     try:
         client = Client(mcp)
         async with client:
-            result = await client.call_tool("get_datasets_by_format", {"file_format": "CSV", "limit": 3})
+            result = await client.call_tool(
+                "get_datasets_by_format", {"file_format": "CSV", "limit": 3}
+            )
             search_results_str = result.content[0].text if result.content else "{}"
             search_results = json.loads(search_results_str)
             assert isinstance(search_results, dict)

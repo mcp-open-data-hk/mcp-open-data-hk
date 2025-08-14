@@ -37,12 +37,11 @@ async def test_client():
             result = await client.call_tool("list_datasets", {"limit": 1})
             datasets_str = result.content[0].text if result.content else "[]"
             datasets = json.loads(datasets_str)
-            
+
             if datasets:
                 dataset_id = datasets[0]
                 result = await client.call_tool(
-                    "get_dataset_details", 
-                    {"dataset_id": dataset_id}
+                    "get_dataset_details", {"dataset_id": dataset_id}
                 )
                 details_str = result.content[0].text if result.content else "{}"
                 details = json.loads(details_str)
@@ -71,12 +70,11 @@ async def test_client():
             result = await client.call_tool("list_categories", {"limit": 1})
             categories_str = result.content[0].text if result.content else "[]"
             categories = json.loads(categories_str)
-            
+
             if categories:
                 category_id = categories[0]
                 result = await client.call_tool(
-                    "get_category_details", 
-                    {"category_id": category_id}
+                    "get_category_details", {"category_id": category_id}
                 )
                 details_str = result.content[0].text if result.content else "{}"
                 details = json.loads(details_str)
