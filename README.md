@@ -31,7 +31,7 @@ After installation, configure your MCP-compatible client (like Cursor, Claude Co
 ```json
 {
   "mcpServers": {
-    "fetch": {
+    "mcp-open-data-hk": {
       "command": "uvx",
       "args": ["mcp-open-data-hk"]
     }
