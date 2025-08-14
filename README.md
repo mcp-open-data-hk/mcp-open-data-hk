@@ -1,6 +1,6 @@
 # mcp-open-data-hk
 
-This is an MCP (Model Context Protocol) server that provides access to data from [data.gov.hk](https://data.gov.hk), the official open data portal of the Hong Kong government.
+This is an MCP (Model Context Protocol) server that provides access to data from [DATA.GOV.HK](https://DATA.GOV.HK), the official open data portal of the Hong Kong government.
 
 ## Installation
 
@@ -25,7 +25,7 @@ After installation, configure your MCP-compatible client (like Cursor, Claude Co
 
 ## Features
 
-The server provides the following tools to interact with the data.gov.hk API:
+The server provides the following tools to interact with the DATA.GOV.HK API:
 
 1. `list_datasets` - Get a list of dataset IDs
 2. `get_dataset_details` - Get detailed information about a specific dataset
@@ -36,20 +36,11 @@ The server provides the following tools to interact with the data.gov.hk API:
 7. `get_datasets_by_format` - Get datasets by file format
 8. `get_supported_formats` - Get list of supported file formats
 
-3. **For local development**:
-   ```bash
-   python src/server.py
-   ```
-
-4. **Using FastMCP CLI**:
-   ```bash
-   fastmcp run src/server.py:mcp
-   ```
 
 ## Tools
 
 ### list_datasets
-Get a list of dataset IDs from data.gov.hk
+Get a list of dataset IDs from DATA.GOV.HK
 
 Parameters:
 - `limit` (optional): Maximum number of datasets to return (default: 1000)
@@ -136,7 +127,7 @@ A dictionary containing:
 - `results`: List of matching datasets
 
 ### get_supported_formats
-Get a list of file formats supported by data.gov.hk
+Get a list of file formats supported by DATA.GOV.HK
 
 Returns:
 A list of supported file formats
@@ -152,12 +143,12 @@ python tests/comprehensive_test.py
 
 ### Run server directly:
 ```bash
-python src/server.py
+python -m src.mcp_open_data_hk
 ```
 
 ### Run with FastMCP CLI:
 ```bash
-fastmcp run src/server.py:mcp
+fastmcp run src.mcp_open_data_hk.server:mcp
 ```
 
 ### Run unit tests:
@@ -165,76 +156,6 @@ fastmcp run src/server.py:mcp
 pytest tests/
 ```
 
-## Adding to AI Assistants
-
-### For Cursor:
-
-**Using FastMCP CLI (recommended):**
-```bash
-fastmcp install cursor src/server.py --server-name "mcp-open-data-hk"
-```
-
-**Manual Configuration via UI:**
-1. Open Cursor Settings
-2. Go to MCP Servers
-3. Click "Add Server"
-4. Enter:
-   - Name: mcp-open-data-hk
-   - Command: `python`
-   - Arguments: `["-m", "mcp_open_data_hk"]`
-   - Working Directory: `/full/path/to/mcp-open-data-hk`
-
-**Manual Configuration via settings.json:**
-Edit your Cursor settings.json file and add:
-```json
-{
-  "mcpServers": {
-    "mcp-open-data-hk": {
-      "command": "python",
-      "args": ["-m", "mcp_open_data_hk"],
-      "cwd": "/full/path/to/mcp-open-data-hk"
-    }
-  }
-}
-```
-
-### For Claude Code:
-
-**Using FastMCP CLI (recommended):**
-```bash
-fastmcp install claude-code src/server.py --server-name "mcp-open-data-hk"
-```
-
-**Manual Configuration via UI:**
-1. Open Claude Code Settings
-2. Go to MCP Servers
-3. Click "Add Server"
-4. Enter:
-   - Name: mcp-open-data-hk
-   - Command: `python`
-   - Arguments: `["-m", "mcp_open_data_hk"]`
-   - Working Directory: `/full/path/to/mcp-open-data-hk`
-
-**Manual Configuration via settings.json:**
-Edit your Claude Code settings.json file and add:
-```json
-{
-  "mcpServers": {
-    "mcp-open-data-hk": {
-      "command": "python",
-      "args": ["-m", "mcp_open_data_hk"],
-      "cwd": "/full/path/to/mcp-open-data-hk"
-    }
-  }
-}
-```
-
-### For Claude Desktop:
-
-**Using FastMCP CLI (recommended):**
-```bash
-fastmcp install claude-desktop src/server.py --server-name "mcp-open-data-hk"
-```
 
 ## Understanding Path Configuration
 
@@ -258,7 +179,7 @@ When installed as a package, the server can be referenced by its module name rat
   "mcpServers": {
     "mcp-open-data-hk": {
       "command": "python",
-      "args": ["/full/path/to/mcp-open-data-hk/src/server.py"],
+      "args": ["-m", "src.mcp_open_data_hk"],
       "cwd": "/full/path/to/mcp-open-data-hk"
     }
   }
@@ -267,65 +188,19 @@ When installed as a package, the server can be referenced by its module name rat
 
 The package installation approach is recommended for end users, while the file path approach is useful for local development and testing.
 
-## Alternative Approach: Packaging for Distribution
-
-If you want to make your server work like the published examples, you can package it for distribution:
-
-1. **Package as a Python package** and publish it to PyPI
-2. Users would then install and run it like:
-   ```bash
-   pip install mcp-open-data-hk
-   mcp-open-data-hk
-   ```
-
-However, for local development and testing, you can run it directly as shown in the Installation section.
-
-## Using Environment Variables
-
-Create a `.env` file in the project root:
-```bash
-DEBUG=true
-TIMEOUT=30
-```
-
-Then install with:
-```bash
-# For Cursor
-fastmcp install cursor src/server.py --server-name "mcp-open-data-hk" --env-file .env
-
-# For Claude Code
-fastmcp install claude-code src/server.py --server-name "mcp-open-data-hk" --env-file .env
-```
-
-Or add to settings.json:
-```json
-{
-  "mcpServers": {
-    "mcp-open-data-hk": {
-      "command": "python",
-      "args": ["/full/path/to/data_gov_hk_mcp/src/server.py"],
-      "cwd": "/full/path/to/data_gov_hk_mcp",
-      "env": {
-        "DEBUG": "true",
-        "TIMEOUT": "30"
-      }
-    }
-  }
-}
-```
 
 ## Example Queries
 
 Once installed, try these queries with your AI assistant:
 
-1. "List some datasets from the Hong Kong government data portal"
-2. "Find datasets related to transportation in Hong Kong"
-3. "What categories of data are available on data.gov.hk?"
-4. "Get details about the flight information dataset"
-5. "Search for datasets about weather in Hong Kong"
-6. "What file formats are supported by data.gov.hk?"
-7. "Find CSV datasets about population"
-8. "Show me the most common tags in transport datasets"
+1. "List some datasets from the Hong Kong government data portal via mcp-open-data-hk mcp."
+2. "Find datasets related to transportation in Hong Kong. Use mcp-open-data-hk."
+3. "What categories of data are available on DATA.GOV.HK? Use mcp-open-data-hk."
+4. "Get details about the flight information dataset. Use mcp-open-data-hk."
+5. "Search for datasets about weather in Hong Kong. Use mcp-open-data-hk."
+6. "What file formats are supported by DATA.GOV.HK? Use mcp-open-data-hk."
+7. "Find CSV datasets about population Use mcp-open-data-hk."
+8. "Show me the most common tags in transport datasets Use mcp-open-data-hk."
 
 The AI will automatically use the appropriate tools from your MCP server to fetch the requested information.
 
@@ -333,13 +208,13 @@ The AI will automatically use the appropriate tools from your MCP server to fetc
 
 ### Common Issues
 
-1. **Module not found errors**: Make sure you've installed the dependencies with `pip install -r requirements.txt`
+1. **Module not found errors**: Make sure you've installed the dependencies with `pip install -e .` for local development, or `pip install mcp-open-data-hk` for the published package.
 
-2. **Path issues**: Ensure the paths in your IDE configuration are correct absolute paths
+2. **Path issues**: Ensure the `cwd` in your IDE configuration is the correct absolute path to the project root.
 
 3. **Permission errors**: On Unix systems, make sure the scripts have execute permissions:
    ```bash
-   chmod +x src/server.py
+   chmod +x src/mcp_open_data_hk/__main__.py
    ```
 
 4. **FastMCP not found**: Install it with:
@@ -353,7 +228,7 @@ If you're having issues, you can test the connection manually:
 
 1. Run the server in one terminal:
    ```bash
-   python src/server.py
+   python -m src.mcp_open_data_hk
    ```
 
 2. In another terminal, run the test client:
@@ -365,7 +240,7 @@ If this works, the issue is likely in the IDE configuration.
 
 ## Extending the Server
 
-You can extend the server by adding more tools in `src/server.py`. Follow the existing patterns:
+You can extend the server by adding more tools in `src/mcp_open_data_hk/server.py`. Follow the existing patterns:
 
 1. Add a new function decorated with `@mcp.tool`
 2. Provide a clear docstring explaining the function and parameters
@@ -443,7 +318,10 @@ Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md)
 ```
 mcp-open-data-hk/
 ├── src/
-│   └── server.py          # Main MCP server implementation
+│   └── mcp_open_data_hk/  # Main Python package
+│       ├── __init__.py    # Package initialization
+│       ├── __main__.py    # Package entry point
+│       └── server.py      # Main MCP server implementation
 ├── tests/
 │   ├── test_client.py     # Client test script
 │   ├── debug_search.py    # Search functionality test
